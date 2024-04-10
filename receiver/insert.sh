@@ -2,8 +2,8 @@
 
 CLICKHOUSE_INSERT() {
     while :; do
-        for f in $(find /data/dti_waf/syslog_files -name 'syslog*'); do
-            cat $f | clickhouse-client --host 211.115.206.6 --port 9001 --query="insert into default.dti_test_wafd FORMAT JSONEachRow" && rm $f
+        for f in $(find /data/waf/syslog_files -name 'syslog*'); do
+            cat $f | clickhouse-client --host 211.115.206.6 --port 9001 --query="insert into default.test_wafd FORMAT JSONEachRow" && rm $f
             exitcode="${?}"
             if [ $exitcode -eq 0 ]; then
                 echo "$(date +%Y)/$(date +%m)/$(date +%d)-$(date +%H):$(date +%M):$(date +%S) insert into default.dti_wafd:$f"

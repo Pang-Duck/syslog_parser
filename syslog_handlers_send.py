@@ -12,14 +12,14 @@ formatter = logging.Formatter("%(asctime)s - %(name)s")
 
 # SyslogHandler 설정
 syslog_handler = SysLogHandler(
-    address=("211.115.206.6", 8516), socktype=socket.SOCK_DGRAM
+    address=("123.123.123.123", 8516), socktype=socket.SOCK_DGRAM
 )
 syslog_handler.setLevel(logging.INFO)
 syslog_handler.setFormatter(formatter)
 
 
 # FileHandler 설정
-# file_handler = logging.FileHandler('/data/dti_waf/syslog_files/test5.log',mode ="w")
+# file_handler = logging.FileHandler('/data/waf/syslog_files/test5.log',mode ="w")
 # file_handler.setLevel(logging.info)
 # file_handler.setFormatter(formatter)
 
