@@ -1,0 +1,9 @@
+version: "3.5"
+services:
+  dti_waf_syslog:
+    image: syslog:latest
+    command: cd /home/ctilab && python3 receiver_udp.py && /bin/bash insert.sh
+    restart: always
+    volumes:
+      - /home/waf/syslog_files:/data/waf/syslog_files
+      - /home/waf/script:/receiver
