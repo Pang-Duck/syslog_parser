@@ -3,11 +3,6 @@ import logging
 import json
 
 
-logging.basicConfig(
-    filename="udp_packets.log", level=logging.INFO, format="%(asctime)s - %(message)s"
-)
-
-
 UDP_IP = "0.0.0.0"
 UDP_PORT = 8516
 BUFFER_SIZE = 65535
@@ -19,18 +14,29 @@ sock.bind((UDP_IP, UDP_PORT))
 
 
 while True:
-    data, addr = sock.recvfrom(BUFFER_SIZE)
-    packet_data = data.decode("utf-8")
-    info_start_index = packet_data.find("unit_hostname=")
-    info_end_index = packet_data.find(",response=")
-    info_string = packet_data[info_start_index:info_end_index]
-    # 필요한 정보를 JSON 형식으로 변환
-    info_list = [item.split("=") for item in info_string.split(",")]
-    info_dict = {item[0]: item[1] for item in info_list}
-    json_data = json.dumps(info_dict, indent=2)
+    try:
+        logging.basicConfig(
+            filename="udp_packets.log",
+            level=logging.INFO,
+            format="%(message)s",
+        )
+        data, addr = sock.recvfrom(BUFFER_SIZE)
+        packet_data = data.decode("utf-8")
 
-    logging.info(json_data)
+        # syslog의 첫번째 필드
+        info_start_index = packet_data.find("unit_hostname=")
+        # info_end_index = packet_data.find(",response=")
+        info_string = packet_data[info_start_index:]
+        # 필요한 정보를 JSON 형식으로 변환
+        info_list = [item.split("=") for item in info_string.split(",")]
+        info_dict = {item[0]: item[1].strip('''"''') for item in info_list}
+        json_data = json.dumps(info_dict, indent=2)
+        with open("udp_packet.log", "a") as f:
+            f.write(json_data + "\n")
 
+        logging.info(json_data)
+    except Exception as e:
+        pass
 
 # while True:
 #    data, addr = sock.recvfrom(BUFFER_SIZE)
